@@ -1,0 +1,28 @@
+ComplexNetworkSim is a Python package for the simulation of agents 
+connected in a complex network.  
+
+Update February 2014: code is now available on github for you to fork if you want to, here: https://github.com/jschaul/ComplexNetworkSim
+
+The framework can can create a virtual complex network with virtual agents
+that can interact with each other. This can be used for example to study
+the spread of an epidemic over this simulated network and compare it
+with a phenomenon in the real world. Agent-based simulation tools
+generally operate on a simple topology such as grids or lattices, but
+this framework goes beyond this limitation by providing support for
+simulation over complex topologies (i.e. any kind of non-regularly 
+connected graph). In addition, this project is not 
+limited to a static network, but also takes into account temporal
+networks, where processes can dynamically change the underlying network
+structure over time. 
+
+The package requires `NetworkX`_ and `SimPy`_ to run simulations. It also requires
+`matplotlib`_ (and `NumPy`_) for the visualisations and optionally `ImageMagick`_ for animated .gif images.
+
+Please see http://packages.python.org/ComplexNetworkSim for documentation, installation instructions, background information and how to get started using this package.
+
+
+.. _SimPy: http://simpy.sourceforge.net/
+.. _NetworkX: http://networkx.lanl.gov/
+.. _ImageMagick: http://www.imagemagick.org/
+.. _NumPy: http://sourceforge.net/projects/numpy/files/NumPy/
+.. _matplotlib: http://sourceforge.net/projects/matplotlib/files/matplotlib/
