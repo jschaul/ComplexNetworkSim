@@ -27,6 +27,7 @@ This project was created in 2010-2011 and since then not actively developed anym
 
 ## Further links
 
+* [![PyPI version](https://badge.fury.io/py/ComplexNetworkSim.png)](http://badge.fury.io/py/ComplexNetworkSim)
 * The project is available for download on [PyPi](https://pypi.python.org/pypi/ComplexNetworkSim/).
 * Documentation currently [http://pythonhosted.org/ComplexNetworkSim/](http://pythonhosted.org/ComplexNetworkSim/)
 
