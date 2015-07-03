@@ -1,3 +1,11 @@
+
+# !WARNING!
+
+This library is out of date - it only works with simpy version 2 and python version 2 and the code has not changed since 2010. 
+
+**For a more up to date version please check out the fork at [https://github.com/kentwait/nxsim](https://github.com/kentwait/nxsim)**
+
+
 # ComplexNetworkSim
 
 ComplexNetworkSim is a Python package for the simulation of agents connected in a complex network.
