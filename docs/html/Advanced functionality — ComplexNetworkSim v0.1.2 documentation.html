@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Advanced functionality — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Advanced%20functionality%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Advanced%20functionality%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Advanced%20functionality%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Advanced%20functionality%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Advanced%20functionality%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Brief API" href="https://pythonhosted.org/ComplexNetworkSim/api.html">
+    <link rel="prev" title="Getting started with ComplexNetworkSim" href="https://pythonhosted.org/ComplexNetworkSim/start.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="Getting started with ComplexNetworkSim" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-functionality">
+<span id="advanced"></span><h1>Advanced functionality<a class="headerlink" href="#advanced-functionality" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="workflow-and-creating-simulatons-with-multiple-parameter-combinations-and-permutations">
+<h2>Workflow and creating simulatons with multiple parameter combinations and permutations<a class="headerlink" href="#workflow-and-creating-simulatons-with-multiple-parameter-combinations-and-permutations" title="Permalink to this headline">¶</a></h2>
+<p>For this system, multiple levels of abstraction have been designed. We can run one simulation with
+multiple trials and its result visualisations with the <strong>*independent*</strong>
+definition of each of</p>
+<ul class="simple">
+<li>Complex Network structure (e.g. networkX generated graph, or graph from a file)</li>
+<li>Agent behaviour</li>
+<li>Modelling parameters (e.g. number of nodes, infection rate, directory
+for file output, etc)</li>
+<li>Environment agent behaviour and network structure evolution in time (optional)</li>
+</ul>
+<p>But this project also allows, since it is done in Python, to create
+another level of abstraction on top of these definition, since we
+generally wish to perform studies with different model parameters,
+different network structures, and different agent behaviours. If there
+are many such combinations, it is a little cumbersome to create a model
+of each of these combinations of four elements.</p>
+<p>Since the design of this framework is so modular, it essentially makes
+each element a parameter to the simulation. This then allows to create
+defaults for each of {parameters, network structures, agent behaviours}, and also
+specify various combinations of these elements. Once this is done, we
+can run multiple simulations with multiple combinations of elements,
+where each simulation runs multiple trials and falls back on the default
+parameters or agent class if a certain combination omits certain
+elements. In Python code, this would look like the following code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#assume we defined two agent behaviours</span>
+<span class="kn">import</span> <span class="nn">agent1</span><span class="o">,</span> <span class="nn">agent2</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="c"># manual discrete combinations; specify the important only</span>
+    <span class="c"># that makes 2 simulations total in our case</span>
+    <span class="n">parameters1</span> <span class="o">=</span> <span class="p">{</span><span class="s">"foo"</span><span class="p">:</span><span class="mi">30</span><span class="p">,</span> <span class="s">"bar"</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s">"agent"</span><span class="p">:</span> <span class="n">agent1</span><span class="p">}</span>
+    <span class="n">parameters2</span> <span class="o">=</span> <span class="p">{</span><span class="s">"foo"</span><span class="p">:</span><span class="mi">77</span><span class="p">,</span> <span class="s">"agent"</span><span class="p">:</span> <span class="n">agent2</span><span class="p">,</span> <span class="s">"network"</span><span class="p">:</span> <span class="s">"scale_free"</span><span class="p">}</span>
+    <span class="c">#parameters... = {...}</span>
+    <span class="n">parameter_combinations</span> <span class="o">=</span> <span class="p">[</span><span class="n">parameters1</span><span class="p">,</span> <span class="n">parameters2</span><span class="p">]</span>
+
+    <span class="c">#or, alternatively (mind the complexity explosion if there are many parameters!) all permutations</span>
+    <span class="c"># 2 * 2 * 3 * 3 = 36 simulations already! Assuming they each take one minute, well, you have been warned.</span>
+    <span class="n">agents</span> <span class="o">=</span> <span class="p">[</span><span class="n">agent1</span><span class="p">,</span> <span class="n">agent2</span><span class="p">]</span>
+    <span class="n">networks</span> <span class="o">=</span> <span class="p">[</span><span class="s">"scale_free"</span><span class="p">,</span> <span class="s">"random"</span><span class="p">]</span>
+    <span class="n">foos</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">52</span><span class="p">]</span>
+    <span class="n">bars</span> <span class="o">=</span> <span class="p">[</span><span class="mi">111</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">333</span><span class="p">]</span>
+    <span class="n">parameter_combinations</span> <span class="o">=</span> <span class="p">[{</span><span class="s">"foo"</span><span class="p">:</span><span class="n">a</span><span class="p">,</span> <span class="s">"bar"</span><span class="p">:</span><span class="n">b</span><span class="p">,</span> <span class="s">"agent"</span><span class="p">:</span><span class="n">c</span><span class="p">,</span> <span class="s">"network"</span><span class="p">:</span><span class="n">d</span><span class="p">}</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">foos</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bars</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">agents</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">networks</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">parameter_combinations</span><span class="p">:</span>
+        <span class="n">runSimulation</span><span class="p">(</span><span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">runSimulation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c"># we can specify a default for each parameter as the second function argument to .get()</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'foo'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c">#here, 1 is the default value</span>
+    <span class="n">bar</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'bar'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">agent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'agent'</span><span class="p">,</span> <span class="n">agent1</span><span class="p">)</span>
+    <span class="n">networkString</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'network'</span><span class="p">,</span> <span class="s">"random_network"</span><span class="p">)</span>
+
+    <span class="c"># ... (simulation)</span>
+</pre></div>
+</div>
+<p>It is then up to you to specify output directories and maybe even 
+automatic comparisons of results with the various parameter 
+combinations. Depending on the number of parameters permutations, the 
+total number of simulations can get very large, so you should first test
+ how long one simulation takes, and be prepared to e.g. run the code 
+overnight. See <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/more.html#scalability"><em>Performance: How scalable is the simulation environment?</em></a>
+ for an approximate idea of how long individual simulations take (each 
+simulation can have multiple trials, the results of which are averaged, 
+too! That adds another factor to consider).</p>
+</div>
+<div class="section" id="introducing-the-environment-agent">
+<h2>Introducing the environment agent<a class="headerlink" href="#introducing-the-environment-agent" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes it can be useful to have a special agent that is not part 
+of the actual graph, but controls certain environment elements. For 
+example, this agent could inject an initial infection into the network 
+at a specific time step, or alter the network structure by creating or 
+removing links between agents during the simulation.</p>
+<p>We define it like any other agent, here an example environment agent that infects one agent after 7 timesteps.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">'''file = "environment_SIR.py"</span>
+<span class="sd">Environment Agent for SIR model: infects random</span>
+<span class="sd">agent at timestep 7.'''</span>
+
+<span class="kn">from</span> <span class="nn">ComplexNetworkSim</span> <span class="kn">import</span> <span class="n">NetworkAgent</span><span class="p">,</span> <span class="n">Sim</span>
+
+<span class="k">class</span> <span class="nc">SIRenvironment</span><span class="p">(</span><span class="n">NetworkAgent</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">initialiser</span><span class="p">):</span>
+        <span class="n">NetworkAgent</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">initialiser</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">Sim</span><span class="o">.</span><span class="n">hold</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="mf">7.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infectRandomInitialAgent</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">Sim</span><span class="o">.</span><span class="n">passivate</span><span class="p">,</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">infectRandomInitialAgent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">NetworkAgent</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAllNodes</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getAgent</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">INFECTED</span>
+
+<span class="c">#    def infectHighestConnectedAgent(self):</span>
+<span class="c">#        import networkx</span>
+<span class="c">#        topo = networkx.Graph(self.globalTopology)</span>
+<span class="c">#        target = max([topo.degree(i) for i in self.getAllNodes()])</span>
+<span class="c">#        self.getAgent(target).state = INFECTED</span>
+</pre></div>
+</div>
+<p>Now, from within our simulation file, we can use it by importing it, 
+then giving it as an extra argument into our NetworkSimulation class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">environment_SIR</span> <span class="kn">import</span> <span class="n">SIRenvironment</span> <span class="k">as</span> <span class="n">environmentAgent</span>
+
+<span class="c">#(...)</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">NetworkSimulation</span><span class="p">(</span><span class="n">G</span><span class="p">,</span>
+                               <span class="n">states</span><span class="p">,</span>
+                               <span class="n">agentClass</span><span class="p">,</span>
+                               <span class="n">directory</span><span class="p">,</span>
+                               <span class="n">MAX_SIMULATION_TIME</span><span class="p">,</span>
+                               <span class="n">TRIALS</span><span class="p">,</span>
+                               <span class="n">environmentAgent</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="changing-network-structure-edges-nodes-during-simulation">
+<h2>Changing network structure (edges/nodes) during simulation<a class="headerlink" href="#changing-network-structure-edges-nodes-during-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Please note that this part (adding/removing edges/nodes) has not been
+ thoroughly tested yet; it works if specified nodes and edges exist but 
+may cause an error if trying to remove edges or nodes that don’t exist.</p>
+<p>To add or remove edges, it’s fairly simple: Every agent (those part 
+of the graph and also the environment agent) can call a method, giving 
+as arguments the node IDs of those nodes to connect/disconnect:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#within agent behaviour code</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">addEdge</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span> <span class="c">#to connect two arbitrary nodes</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">addEdge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span> <span class="c">#to connect itself with a node</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">removeEdge</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span> <span class="c">#removes an edge if there is one. (May cause error otherwise)</span>
+</pre></div>
+</div>
+<p>To add a new agent node to the graph, the following method can be 
+called from an agent, requiring as argument an initial state, and 
+returning the id of the new node, that can then be used to create some 
+edges from this node:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">initial_state</span> <span class="o">=</span> <span class="n">INFECTED</span>
+<span class="n">new_node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">addNewNode</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To remove a node from the simulation environment, the easiest is to 
+passivate it and remove all edges to it. (it can also be removed 
+completely , however I don’t recommend this at the moment because it 
+might cause some bug - this part has not been tested very well yet)</p>
+</div>
+<div class="section" id="on-structuring-code-and-parameter-passing">
+<h2>On structuring code and parameter passing<a class="headerlink" href="#on-structuring-code-and-parameter-passing" title="Permalink to this headline">¶</a></h2>
+<p>It might be good idea to split agent code and simulation code into 
+different modules/files, and to have only a single central place where 
+all parameter values are defined (which also aids to make use of the top
+ section of this page and create simulations with multiple parameters)
+But agents may need certain values, so for this, a global class 
+parameter sharing is integrated.
+To go back to our disease spreading agents, maybe we wish to see the 
+effects of a gaussian versus an exponential distribution of the time 
+infected nodes remain active.</p>
+<p>So we define a parameter within our simulation module.</p>
+<div class="highlight-python"><div class="highlight"><pre>    <span class="c"># Create a dictionary of parameters and add a simple parameter value:</span>
+<span class="n">globalSharedParameters</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">globalSharedParameters</span><span class="p">[</span><span class="s">'infection_rate'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>
+
+    <span class="c"># And an executable string can also be a parameter:</span>
+<span class="n">globalSharedParameters</span><span class="p">[</span><span class="s">'infection_duration'</span><span class="p">]</span> <span class="o">=</span> <span class="s">"self.r.gauss(7, 2)"</span>
+    <span class="c">#or e.g. globalSharedParameters['infection_duration'] = "self.r.expovariate(1/7.0)"</span>
+</pre></div>
+</div>
+<p>This dictionary of an arbitrary number of global parameters can then be passed to the agents, by adding it into the simulation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">simulation</span> <span class="o">=</span> <span class="n">NetworkSimulation</span><span class="p">(</span><span class="n">G</span><span class="p">,</span>
+                               <span class="n">states</span><span class="p">,</span>
+                               <span class="n">agentClass</span><span class="p">,</span>
+                               <span class="n">directory</span><span class="p">,</span>
+                               <span class="n">MAX_SIMULATION_TIME</span><span class="p">,</span>
+                               <span class="n">TRIALS</span><span class="p">,</span>
+                               <span class="n">environmentAgent</span><span class="p">,</span>
+                               <span class="o">**</span><span class="n">globalSharedParameters</span><span class="p">)</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">runSimulation</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(Mind the two stars in front of the last argument to the class)</p>
+<p>Within our agent, we can then use these parameters like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Normal parameter</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">infection_probability</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">globalSharedParameters</span><span class="p">[</span><span class="s">'infection_rate'</span><span class="p">]</span>
+
+<span class="c"># If you're careful it works to evaluate a string parameter defined in the simulation module</span>
+<span class="c"># But use 'eval()' with caution!</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">infection_end</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">globalSharedParameters</span><span class="p">[</span><span class="s">'infection_duration'</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Please note that these parameters are passed by reference, not by 
+value to the agent class, so they are shared and global. So if one agent
+ changes them, they are changed for all agents.</p>
+<p>This way we can split agent behaviour from specific agent parameter values, and easily compare the effects of such a change.</p>
+</div>
+<div class="section" id="further-features">
+<h2>Further features<a class="headerlink" href="#further-features" title="Permalink to this headline">¶</a></h2>
+<p>These pages tried to indroduce all available methods that can be 
+invoked, along with a suggested way of structuring models. I briefly 
+regrouped them in the ref:<cite>API</cite>.</p>
+</div>
+<div class="section" id="future-work">
+<h2>Future work<a class="headerlink" href="#future-work" title="Permalink to this headline">¶</a></h2>
+<p>At the moment, agents have simple states that are represented as 
+integers, and those states can be used for automatic integration with 
+plotting and visualisation. It would be possible to have a more flexible
+ state structure, e.g. a vector or a dictionary, and use those directly 
+with plotting. At the moment, you can give your agents any further 
+attributes you wish (a vector of them, or a dictionary of them, or some 
+manually defined ones), but those are then not supported by the 
+visualisation/plotting part. That’s one task for the future.</p>
+<p>Improvement of performance by allowing parellisation on multiple 
+cores or in a distributed environment is another possible extension.</p>
+<p>Other extenions (3D visualisation, etc) are imaginable.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced functionality</a><ul>
+<li><a class="reference internal" href="#workflow-and-creating-simulatons-with-multiple-parameter-combinations-and-permutations">Workflow and creating simulatons with multiple parameter combinations and permutations</a></li>
+<li><a class="reference internal" href="#introducing-the-environment-agent">Introducing the environment agent</a></li>
+<li><a class="reference internal" href="#changing-network-structure-edges-nodes-during-simulation">Changing network structure (edges/nodes) during simulation</a></li>
+<li><a class="reference internal" href="#on-structuring-code-and-parameter-passing">On structuring code and parameter passing</a></li>
+<li><a class="reference internal" href="#further-features">Further features</a></li>
+<li><a class="reference internal" href="#future-work">Future work</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="previous chapter">Getting started with ComplexNetworkSim</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="next chapter">Brief API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/advanced.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="Getting started with ComplexNetworkSim">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

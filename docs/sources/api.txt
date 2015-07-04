@@ -1,0 +1,85 @@
+.. _API:
+
+Brief API
+=========
+
+It is recommended to look at the other, detailed pages first. This should just serve to look up the syntax of a method.
+
+Brief agent API
+---------------
+
+::
+
+    from ComplexNetworkSim import NetworkAgent, Sim	
+
+	self.getAllNodes() #returns a list of nodes
+	self.getAllAgents() # returns a list of agents
+	self.getNeighbouringNodes() #returns list of adjacent nodes
+	self.getNeighbouringAgents() #returns list of adjacent agents
+	#optionally takes a state as argument, filters and returns only those neighbouring agents in the given state
+	self.getNeighbouringAgentsIter() #same as above, but returns an iterable
+	
+	self.id #gets the ID - please don't modify it, it may break the code.
+	self.getAgent(id) # gets the agent associated with a given node.
+	
+	self.addNewNode(state)
+	self.removeEdge(u, v)
+	self.addEdge(u, v)
+	
+	self.r #the random library that can be used
+	self.TIMESTEP_DEFAULT #class variable; set to 1.0
+	
+	
+Brief Simulation API
+--------------------
+
+Create a class ``NetworkSimulation``:
+
+    Can run multiple fresh trials with the same input parameters. Writes system
+    state evolution to file (states & network topologies) Supports
+    addition/deletion of edges and nodes during simulation
+    
+    *Parameters*
+    
+    topology: a networkx graph 
+    
+    states: a list of initial states corresponding to the nodes in the topology
+    
+    agentClass: the class of agent being activated on each node
+            
+    directory_name: path to where output should be stored. It is recommended to
+    have a different directory per simulation.
+    
+    maxTime : how long the simulation should run
+    
+    *Optional parameters*
+    
+    no_trials: the number of individual simulation trials (default is 3)
+    
+    environmentAgent: the class of agent operating on the network topology
+    globally, e.g. by changing the structure externally. (default is none)
+    
+    globalSharedParameters: dictionary of additional parameters shared globally
+	
+Then run it. Example:
+
+::
+	
+	from ComplexNetworkSim import NetworkSimulation
+
+    simulation = NetworkSimulation(G,
+                                   states,
+                                   agentClass,
+                                   directory,
+                                   MAX_SIMULATION_TIME,
+                                   TRIALS,
+                                   environmentAgent,
+                                   **globalSharedParameters)
+    simulation.runSimulation()
+	
+Visualisation/Plotting API
+--------------------------
+
+refer to :ref:`visual`	
+
+

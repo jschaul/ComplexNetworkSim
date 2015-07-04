@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>What are these .pickled files? — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="What%20are%20these%20.pickled%20files%3F%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="What%20are%20these%20.pickled%20files%3F%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="What%20are%20these%20.pickled%20files%3F%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="What%20are%20these%20.pickled%20files%3F%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="What%20are%20these%20.pickled%20files%3F%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Scalability testing &amp; further information" href="https://pythonhosted.org/ComplexNetworkSim/more.html">
+    <link rel="prev" title="Brief API" href="https://pythonhosted.org/ComplexNetworkSim/api.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="Scalability testing &amp; further information" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="what-are-these-pickled-files">
+<span id="pickled"></span><h1>What are these .pickled files?<a class="headerlink" href="#what-are-these-pickled-files" title="Permalink to this headline">¶</a></h1>
+<p>Upon request, just a small clarification on the generation of pickled
+ files - these are intermediate files created upon simulation, and used 
+when visualising and plotting. This pickle format is basically just a 
+way to take a data structure (list, dictionary, class object) and save 
+it to a file, and from that file, retrieve that data structure again 
+directly. This saves one to convert it to a text or csv document and 
+parse it again.</p>
+<p>If you would like to access manually what’s in those files (although 
+you shouldn’t need to), you can do that like this for example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ComplexNetworkSim</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="n">contents</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="s">'test 3.1/log_trial_0_topology.pickled'</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">contents</span>
+</pre></div>
+</div>
+<p>and retrieve as well as logToFile is implemented as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cPickle</span> <span class="kn">import</span> <span class="n">Pickler</span><span class="p">,</span> <span class="n">Unpickler</span>
+
+<span class="k">def</span> <span class="nf">logToFile</span><span class="p">(</span><span class="n">stuff</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">''' Store one item (e.g. state list or networkx graph) to file. '''</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">'wb'</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">Pickler</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span>
+                <span class="k">print</span> <span class="s">"Written </span><span class="si">%i</span><span class="s"> items to pickled binary file: </span><span class="si">%s</span><span class="s">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">total</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span>
+
+<span class="k">def</span> <span class="nf">retrieve</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="sd">''' Retrieve a pickled object (e.g. state list or networkx graph) from file</span>
+<span class="sd">        '''</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normcase</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">'rb'</span><span class="p">)</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">Unpickler</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">stuff</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">stuff</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">LogOpeningError</span><span class="p">(</span><span class="s">"No file found for </span><span class="si">%s</span><span class="s">"</span> <span class="o">%</span> <span class="n">filename</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For more information on this pickler and unpickler format, see <a class="reference external" href="http://docs.python.org/2/library/pickle.html">Pickle</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="previous chapter">Brief API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="next chapter">Scalability testing &amp; further information</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/pickled.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="Scalability testing &amp; further information">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

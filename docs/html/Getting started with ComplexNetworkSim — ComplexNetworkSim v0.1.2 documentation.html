@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Getting started with ComplexNetworkSim — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Getting%20started%20with%20ComplexNetworkSim%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Getting%20started%20with%20ComplexNetworkSim%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Getting%20started%20with%20ComplexNetworkSim%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Getting%20started%20with%20ComplexNetworkSim%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Getting%20started%20with%20ComplexNetworkSim%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Advanced functionality" href="https://pythonhosted.org/ComplexNetworkSim/advanced.html">
+    <link rel="prev" title="Installation and Dependencies" href="https://pythonhosted.org/ComplexNetworkSim/installation.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="Advanced functionality" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="Installation and Dependencies" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-complexnetworksim">
+<span id="start"></span><h1>Getting started with ComplexNetworkSim<a class="headerlink" href="#getting-started-with-complexnetworksim" title="Permalink to this headline">¶</a></h1>
+<p>This page assumes you have installed everything, and will show you by
+ example all the steps required to create your own complex network 
+simulation. The example shown here is quite basic, to show how to use 
+the code. Some more example code can be found in the /examples/ folder 
+included when you download ComplexNetworkSim.</p>
+<p>The example we will use is the spread of a disease in a network of 
+people. For this, we have agents connected in a network. Each agent can 
+have a state (for the simple simulations, a state will be an integer 
+number - other types of state are also possible later on). This state in
+ our case is either healthy but susceptible to a disease, or infected, 
+or recovered and immune.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#define three constants for our example:</span>
+<span class="n">SUSCEPTIBLE</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">INFECTED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">RECOVERED</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<div class="section" id="create-some-agent-behaviour">
+<h2>Create some agent behaviour<a class="headerlink" href="#create-some-agent-behaviour" title="Permalink to this headline">¶</a></h2>
+<p>We wish to make an agent who acts depending on their state, which in pseudocode looks like this:</p>
+<div class="highlight-python"><pre>for every timestep:
+    if SUSCEPTIBLE:
+        for each infected neighbour:
+            become infected at a certain probability
+    else if INFECTED:
+        wait until recovery happens a few days later</pre>
+</div>
+<p>In actual code, this is perhaps the first time slightly strange, and looks like the following (I <em>strongly</em> urge you to become familiar with <a class="reference external" href="http://simpy.sourceforge.net/">SimPy</a> first, then this will make more sense)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ComplexNetworkSim</span> <span class="kn">import</span> <span class="n">NetworkAgent</span><span class="p">,</span> <span class="n">Sim</span>
+
+<span class="k">class</span> <span class="nc">SIRSimple</span><span class="p">(</span><span class="n">NetworkAgent</span><span class="p">):</span>
+    <span class="sd">""" an implementation of an agent following the simple SIR model """</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">initialiser</span><span class="p">):</span>
+        <span class="n">NetworkAgent</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">initialiser</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infection_probability</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="c"># 5% chance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infection_end</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">def</span> <span class="nf">Run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">SUSCEPTIBLE</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maybeBecomeInfected</span><span class="p">()</span>
+                <span class="k">yield</span> <span class="n">Sim</span><span class="o">.</span><span class="n">hold</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">NetworkAgent</span><span class="o">.</span><span class="n">TIMESTEP_DEFAULT</span> <span class="c">#wait a step</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">INFECTED</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">Sim</span><span class="o">.</span><span class="n">hold</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">infection_end</span>  <span class="c">#wait end of infection</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">RECOVERED</span>
+                <span class="k">yield</span> <span class="n">Sim</span><span class="o">.</span><span class="n">passivate</span><span class="p">,</span> <span class="bp">self</span> <span class="c">#remove agent from event queue</span>
+
+    <span class="k">def</span> <span class="nf">maybeBecomeInfected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">infected_neighbours</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNeighbouringAgentsIter</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="n">INFECTED</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">neighbour</span> <span class="ow">in</span> <span class="n">infected_neighbours</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">SIRSimple</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">infection_probability</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">INFECTED</span>
+                <span class="k">break</span>
+</pre></div>
+</div>
+<p>This is where there is a lot of scope for more complex behaviour, and
+ also it’s possible for each individual agent to adhere to slightly or 
+vastly different bahaviour to other agents. By subclassing NetworkAgent,
+ you get a few functions, such as <tt class="docutils literal"><span class="pre">.getNeighbourgingAgents</span></tt> or <tt class="docutils literal"><span class="pre">.getNeighbouringNodes</span></tt>
+ which gives you a list of agent objects or node objects respectively. 
+Agents can also die, create new agents, add and remove links to other 
+agents at runtime, for more complex networked behaviour.</p>
+<p>In any case, your own agent must adhere to the following structure, in its constructor
+calling its superclass constructor and having a <em>Run</em> method:</p>
+<div class="highlight-python"><pre>from PyComplexSimCore import NetworkAgent, Sim
+
+class myAgent(NetworkAgent):
+
+    def __init__(self, state, initialiser):
+        NetworkAgent.__init__(self, 0, initialiser)
+        #other code goes here
+
+    def Run(self):
+        #further initialisation code may go here
+        while True:
+            #main agent logic goes here</pre>
+</div>
+</div>
+<div class="section" id="define-a-complex-network">
+<h2>Define a complex network<a class="headerlink" href="#define-a-complex-network" title="Permalink to this headline">¶</a></h2>
+<p>The network part is simple, we just use networkx to give us a graph object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+
+<span class="n">nodes</span> <span class="o">=</span> <span class="mi">30</span> <span class="c">#we want a graph with 30 agents as a test.</span>
+
+<span class="c"># Network and initial states of agents</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">scale_free_graph</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+<span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">SUSCEPTIBLE</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>  <span class="c">#list of states corresponding to agent states</span>
+</pre></div>
+</div>
+<p>Now we can infect one initial disease-spreading agent by initially stating e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">INFECTED</span>
+</pre></div>
+</div>
+<p>However there are other, smarter ways of having more control over 
+where an infection starts (see e.g. 
+examples/SIR_model/environment_SIR.py) - but let’s stick to the simple 
+case for now.</p>
+<p>Now we defined how our agents should be connected, and what they 
+should do. It’s possible to have changing network structures (temporal 
+complex networks), more on this later. Let’s simulate what happens for 
+our example:</p>
+</div>
+<div class="section" id="running-a-simulation">
+<h2>Running a simulation<a class="headerlink" href="#running-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>We define an output directory where results are saved, how long we 
+wish to simulate for, the number of simulation trials (the idea is that 
+we can simulate a scenario multiple times with same inputs then take an 
+average over what happens, if that is relevant to our particular case). 
+Then we create an instance of <tt class="docutils literal"><span class="pre">NetworkSimulation</span></tt> with our parameters (more parameters for more complex simulations are possible here, this is just the basics) and call its <tt class="docutils literal"><span class="pre">.runSimulation()</span></tt> method. Easy! :)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ComplexNetworkSim</span> <span class="kn">import</span> <span class="n">NetworkSimulation</span>
+
+<span class="c"># Simulation constants</span>
+<span class="n">MAX_SIMULATION_TIME</span> <span class="o">=</span> <span class="mf">25.0</span>
+<span class="n">TRIALS</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="s">'test'</span> <span class="c">#output directory</span>
+
+    <span class="c"># run simulation with parameters</span>
+    <span class="c"># - complex network structure</span>
+    <span class="c"># - initial state list</span>
+    <span class="c"># - agent behaviour class</span>
+    <span class="c"># - output directory</span>
+    <span class="c"># - maximum simulation time</span>
+    <span class="c"># - number of trials</span>
+    <span class="n">simulation</span> <span class="o">=</span> <span class="n">NetworkSimulation</span><span class="p">(</span><span class="n">G</span><span class="p">,</span>
+                                   <span class="n">states</span><span class="p">,</span>
+                                   <span class="n">SIRSimple</span><span class="p">,</span>
+                                   <span class="n">directory</span><span class="p">,</span>
+                                   <span class="n">MAX_SIMULATION_TIME</span><span class="p">,</span>
+                                   <span class="n">TRIALS</span><span class="p">)</span>
+    <span class="n">simulation</span><span class="o">.</span><span class="n">runSimulation</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Now you could run your first simulation by adding the following then executing the script.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will produce a few files in the specified output directory in 
+Python pickled format - the results will be apparent when you visualise 
+them (see below).</p>
+<p><em>I recommend one directory per simulation! Multiple different simulation outputs in the same directory may cause problems.</em></p>
+<p>The full code can be seen here: <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/first_simulation.html#first"><em>CODE: First simulation and visualisation</em></a>, and is also available under examples/getting started code/ within the zip file you download.</p>
+</div>
+<div class="section" id="visualise-simulation-results">
+<span id="visual"></span><h2>Visualise simulation results<a class="headerlink" href="#visualise-simulation-results" title="Permalink to this headline">¶</a></h2>
+<p>So you created a simulation, it runs and produces some pickled output
+ files. Now you wish to visualise the resuts? ComplexNetworkSim has 
+support to build basic plots, and visualise the network state changes 
+over time.</p>
+<p>First we need to load the classes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">ComplexNetworkSim</span> <span class="kn">import</span> <span class="n">PlotCreator</span><span class="p">,</span> <span class="n">AnimationCreator</span>
+</pre></div>
+</div>
+<p>Then we can define a few parameters for the names:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">directory</span> <span class="o">=</span> <span class="s">'test'</span> <span class="c">#location of simulation result files</span>
+<span class="n">myName</span> <span class="o">=</span> <span class="s">"SIR"</span> <span class="c">#name that you wish to give your image output files</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s">"Simulation of agent-based simple SIR"</span>
+<span class="c">#define three simulation-specific constants:</span>
+<span class="n">SUSCEPTIBLE</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">INFECTED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">RECOVERED</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Next we define a few parameters for what states we wish to show on the plot, along with their legend label and colour:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">statesToMonitor</span> <span class="o">=</span> <span class="p">[</span><span class="n">INFECTED</span><span class="p">,</span> <span class="n">SUSCEPTIBLE</span><span class="p">]</span> <span class="c">#even if we have states 0,1,2,3,... plot only 1 and 0</span>
+<span class="n">colours</span> <span class="o">=</span> <span class="p">[</span><span class="s">"r"</span><span class="p">,</span> <span class="s">"g"</span><span class="p">]</span> <span class="c">#state 1 in red, state 0 in green</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">"Infected"</span><span class="p">,</span> <span class="s">"Susceptible"</span><span class="p">]</span> <span class="c">#state 1 named 'Infected', 0 named 'Susceptible'</span>
+</pre></div>
+</div>
+<p>Next we define a colour for the animated nodes depending on their 
+state. Let’s make suceptible white, infected red and recovered 40% gray.
+ Also, probably we generated multiple trial runs - the plot will take an
+ average of all of them, but the animation will follow a single trial, 
+so we can optionally specify it (default=trial 0):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">SUSCEPTIBLE</span><span class="p">:</span><span class="s">"w"</span><span class="p">,</span> <span class="n">INFECTED</span><span class="p">:</span><span class="s">"r"</span><span class="p">,</span> <span class="n">RECOVERED</span><span class="p">:</span><span class="s">"0.4"</span><span class="p">}</span>
+<span class="n">trialToVisualise</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>Now for the actual call to the plotting and animating, we simply create an instance of the <tt class="docutils literal"><span class="pre">PlotCreator</span></tt> class with the defined parameters and call its <tt class="docutils literal"><span class="pre">.plotSimulation()</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span> <span class="o">=</span> <span class="n">PlotCreator</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">myName</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">statesToMonitor</span><span class="p">,</span> <span class="n">colours</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">plotSimulation</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="c">#show=True shows the graph directly,</span>
+<span class="c">#otherwise only a png file is created in the directory defined above.</span>
+</pre></div>
+</div>
+<p>Similarly for the visualisation; create an instance of the <tt class="docutils literal"><span class="pre">AnimationCreator</span></tt> class and call <tt class="docutils literal"><span class="pre">.create_gif</span></tt>.
+ If ImageMagick is installed, it will create PNG image files for each 
+time step plus an animated gif. If it is not installed, it will still 
+create the PNGs and warn you that ImageMagick is not installed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">visualiser</span> <span class="o">=</span> <span class="n">AnimationCreator</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">myName</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">trial</span><span class="o">=</span><span class="n">trialToVisualise</span><span class="p">)</span>
+<span class="c">#gif speed can be changed by giving a parameter 'delay' (default=100) to AnimationCreator</span>
+<span class="n">visualiser</span><span class="o">.</span><span class="n">create_gif</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And that’s it! Running this code may take several seconds, because it
+ will create multiple image files - but the good thing is this speed 
+won’t worsen with a more complicated simulation. Have a look at the 
+generated output in the defined output directory.</p>
+<p>The full code of this page can be seen here: <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/first_simulation.html#first"><em>CODE: First simulation and visualisation</em></a>, and is also available under examples/getting started code/ within the zip file you download.</p>
+</div>
+<div class="section" id="note-on-creating-your-own-models-and-changing-the-way-visualisation-works">
+<h2>Note on creating your own models and changing the way visualisation works<a class="headerlink" href="#note-on-creating-your-own-models-and-changing-the-way-visualisation-works" title="Permalink to this headline">¶</a></h2>
+<p>You can try to run the provided example models (examples folder) like
+ any other Python script. I suggest having a look at them before writing
+ your own models.
+You may also wish to become familiar with both <a class="reference external" href="http://simpy.sourceforge.net/">SimPy</a> and <a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a> before attempting to write you own complex network simulation models, as this project is based heavily on those libraries.</p>
+<p>If you wish to use another way of visualising the simulation output, 
+you can have a look at the classes for plotting.py, animation.py and 
+statistics.py to see how to handle the output, and then create your own 
+way of visualising things from the simulation output.</p>
+<p>Quick link to <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/advanced.html#advanced"><em>Advanced functionality</em></a></p>
+<p>Quick link to <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/more.html#more"><em>Scalability testing &amp; further information</em></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting started with ComplexNetworkSim</a><ul>
+<li><a class="reference internal" href="#create-some-agent-behaviour">Create some agent behaviour</a></li>
+<li><a class="reference internal" href="#define-a-complex-network">Define a complex network</a></li>
+<li><a class="reference internal" href="#running-a-simulation">Running a simulation</a></li>
+<li><a class="reference internal" href="#visualise-simulation-results">Visualise simulation results</a></li>
+<li><a class="reference internal" href="#note-on-creating-your-own-models-and-changing-the-way-visualisation-works">Note on creating your own models and changing the way visualisation works</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="previous chapter">Installation and Dependencies</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="next chapter">Advanced functionality</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/start.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="Advanced functionality">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="Installation and Dependencies">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

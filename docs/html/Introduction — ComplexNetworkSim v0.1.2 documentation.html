@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Introduction — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Installation and Dependencies" href="https://pythonhosted.org/ComplexNetworkSim/installation.html">
+    <link rel="prev" title="Welcome to ComplexNetworkSim’s documentation!" href="https://pythonhosted.org/ComplexNetworkSim/index.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="Installation and Dependencies" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/index.html" title="Welcome to ComplexNetworkSim’s documentation!" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="a-more-technical-introduction-to-the-project">
+<h2>A more technical introduction to the project<a class="headerlink" href="#a-more-technical-introduction-to-the-project" title="Permalink to this headline">¶</a></h2>
+<p>The framework can can create a virtual complex network with virtual agents
+that can interact with each other. This can be used for example to study
+the spread of an epidemic over this simulated network and compare it
+with a phenomenon in the real world. Agent-based simulation tools
+generally operate on a simple topology such as grids or lattices, but
+this framework goes beyond this limitation by providing support for
+simulation over complex topologies (i.e. any kind of non-regularly
+connected graph). In addition, this project is not
+limited to a static network, but also takes into account temporal
+networks, where processes can dynamically change the underlying network
+structure over time.</p>
+</div>
+<div class="section" id="a-less-technical-introduction-to-the-project">
+<h2>A less technical introduction to the project<a class="headerlink" href="#a-less-technical-introduction-to-the-project" title="Permalink to this headline">¶</a></h2>
+<p>This document explains the creation of a new programming tool
+for simulating complex problems. The project allows people with a
+background in programming to simulate a situation, in which people,
+animals, computers, or abstract agents connect to each other
+arbitrarily. To give two concrete examples, it allows to simulate how a
+disease spreads in an human population, and it can simulate how
+connected computer servers that provide a service (such as Skype) can
+suddenly fail. It does this by creating virtual agents with a
+certain behaviour that are interconnected, and where behaviour and
+connections can change over time.</p>
+</div>
+<div class="section" id="an-example-output-of-a-simple-complex-network-simulation-model">
+<h2>An example output of a simple complex network simulation model<a class="headerlink" href="#an-example-output-of-a-simple-complex-network-simulation-model" title="Permalink to this headline">¶</a></h2>
+<p>Imagine we take a social network of people, and one person has a 
+disease. This person can now infect their friends with that disease. For
+ this scenario we write a small model consisting of code for:</p>
+<blockquote>
+<div><ul class="simple">
+<li>A network graph (e.g. a scale-free network)</li>
+<li>An agent specification (e.g. spread disease on random neighbour)</li>
+<li>Some output parameters (e.g. red colour for infected)</li>
+<li>(optional) A network structure evolution (e.g. change links between agents)</li>
+</ul>
+</div></blockquote>
+<p>then this project produces a visualisation of how the disease spreads
+ in the network. (animated gif! - but it also produces static images)</p>
+<blockquote>
+<div><img alt="_images/SIR_scale_free6.gif" src="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/SIR_scale_free6.gif" style="width: 400px; height: 300px;">
+</div></blockquote>
+<p>and a plot showing the evolution of infected people:</p>
+<blockquote>
+<div><div class="figure">
+<img alt="_images/plot_SIR_scale_free8.png" src="Introduction%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/plot_SIR_scale_free8.png" style="width: 400px; height: 300px;">
+</div>
+</div></blockquote>
+<p>The result data used for plotting and animation can of course also be used for integration in other analysis.</p>
+</div>
+<div class="section" id="what-do-i-mean-with-complex-networks-and-agent-based-simulations">
+<h2>What do I mean with Complex Networks and Agent-Based Simulations?<a class="headerlink" href="#what-do-i-mean-with-complex-networks-and-agent-based-simulations" title="Permalink to this headline">¶</a></h2>
+<p>An <strong>agent-based simulation</strong> <strong>(ABS)</strong> is a system of multiple
+autonomous agents that interact with each other. We can think of these
+agents to for example represent people or animals, but they can also
+represent something more abstract. In an ABS, each agent has a state
+(e.g. alive or dead) and a defined behaviour (e.g. transmit a disease
+when infected). The simulation then lets these agents interact with each
+other, and looks at the overall change in agent states.</p>
+<p><strong>Complex networks</strong> are a type of graphs consisting of nodes and edges
+like any other graph, but they tend to represent something specific
+taken from the real world, such as people and friendship links, or the
+topology of a P2P network. Many different systems such as power grids,
+ecosystems, or the brain can be represented as a complex network.</p>
+</div>
+<div class="section" id="what-is-different-in-this-package-compared-to-normal-agent-based-simulations">
+<h2>What is different in this package compared to normal agent-based simulations?<a class="headerlink" href="#what-is-different-in-this-package-compared-to-normal-agent-based-simulations" title="Permalink to this headline">¶</a></h2>
+<p>In basic agent-based simulations, the rules as to which agent is allowed
+to interact with which other agents are very simple: Either every agent
+can interact with every other agent, or agents are limited in their
+interaction with their neighbouring agents, as if agents were living on
+a chessboard (see e.g. for an overview of agent-based simulations).
+Clearly, these rules are not a very realistic scenario, so this project
+tries to address this issue by modeling the connections of the
+agents as a complex network, thus <strong>supporting *any* network
+topology</strong> underneath the simulation environment.</p>
+<p>The main goal of this project hence was to implement a
+<em>framework</em> for agent-based simulations over complex networks, i.e.
+building support to run any kind of complex simulations based on a
+specific network topology. A secondary goal was to then create one or
+two simulation models representing a specific scenario.</p>
+<p>Quick links to</p>
+<p><a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/installation.html#install"><em>Installation and Dependencies</em></a></p>
+<p><a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/start.html#start"><em>Getting started with ComplexNetworkSim</em></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#a-more-technical-introduction-to-the-project">A more technical introduction to the project</a></li>
+<li><a class="reference internal" href="#a-less-technical-introduction-to-the-project">A less technical introduction to the project</a></li>
+<li><a class="reference internal" href="#an-example-output-of-a-simple-complex-network-simulation-model">An example output of a simple complex network simulation model</a></li>
+<li><a class="reference internal" href="#what-do-i-mean-with-complex-networks-and-agent-based-simulations">What do I mean with Complex Networks and Agent-Based Simulations?</a></li>
+<li><a class="reference internal" href="#what-is-different-in-this-package-compared-to-normal-agent-based-simulations">What is different in this package compared to normal agent-based simulations?</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/index.html" title="previous chapter">Welcome to ComplexNetworkSim’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="next chapter">Installation and Dependencies</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/introduction.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/installation.html" title="Installation and Dependencies">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/index.html" title="Welcome to ComplexNetworkSim’s documentation!">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

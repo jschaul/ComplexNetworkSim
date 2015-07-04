@@ -1,0 +1,220 @@
+.. _advanced:
+
+Advanced functionality
+======================
+
+Workflow and creating simulatons with multiple parameter combinations and permutations
+--------------------------------------------------------------------------------------
+
+For this system, multiple levels of abstraction have been designed. We can run one simulation with
+multiple trials and its result visualisations with the ***independent***
+definition of each of
+
+-  Complex Network structure (e.g. networkX generated graph, or graph from a file)
+
+-  Agent behaviour 
+
+-  Modelling parameters (e.g. number of nodes, infection rate, directory
+   for file output, etc) 
+
+-  Environment agent behaviour and network structure evolution in time (optional)
+
+But this project also allows, since it is done in Python, to create
+another level of abstraction on top of these definition, since we
+generally wish to perform studies with different model parameters,
+different network structures, and different agent behaviours. If there
+are many such combinations, it is a little cumbersome to create a model
+of each of these combinations of four elements.
+
+Since the design of this framework is so modular, it essentially makes
+each element a parameter to the simulation. This then allows to create
+defaults for each of {parameters, network structures, agent behaviours}, and also
+specify various combinations of these elements. Once this is done, we
+can run multiple simulations with multiple combinations of elements,
+where each simulation runs multiple trials and falls back on the default
+parameters or agent class if a certain combination omits certain
+elements. In Python code, this would look like the following code:
+
+::
+
+    #assume we defined two agent behaviours
+    import agent1, agent2
+    
+    def main():
+    
+        # manual discrete combinations; specify the important only
+        # that makes 2 simulations total in our case
+        parameters1 = {"foo":30, "bar":5, "agent": agent1}
+        parameters2 = {"foo":77, "agent": agent2, "network": "scale_free"} 
+        #parameters... = {...}
+        parameter_combinations = [parameters1, parameters2]
+        
+        #or, alternatively (mind the complexity explosion if there are many parameters!) all permutations
+        # 2 * 2 * 3 * 3 = 36 simulations already! Assuming they each take one minute, well, you have been warned.
+        agents = [agent1, agent2]
+        networks = ["scale_free", "random"]
+        foos = [7, 30, 52]
+        bars = [111, 222, 333]
+        parameter_combinations = [{"foo":a, "bar":b, "agent":c, "network":d} for a in foos for b in bars for c in agents for d in networks]
+        
+        for parameters in parameter_combinations:
+            runSimulation(**parameters)
+            
+    def runSimulation(**kwargs):
+        # we can specify a default for each parameter as the second function argument to .get()
+        foo = kwargs.get('foo', 1) #here, 1 is the default value
+        bar = kwargs.get('bar', 1)
+        agent = kwargs.get('agent', agent1)
+        networkString = kwargs.get('network', "random_network")
+        
+        # ... (simulation)
+        
+It is then up to you to specify output directories and maybe even automatic comparisons of results with the various parameter combinations. Depending on the number of parameters permutations, the total number of simulations can get very large, so you should first test how long one simulation takes, and be prepared to e.g. run the code overnight. See :ref:`scalability` for an approximate idea of how long individual simulations take (each simulation can have multiple trials, the results of which are averaged, too! That adds another factor to consider).
+
+Introducing the environment agent
+---------------------------------
+
+Sometimes it can be useful to have a special agent that is not part of the actual graph, but controls certain environment elements. For example, this agent could inject an initial infection into the network at a specific time step, or alter the network structure by creating or removing links between agents during the simulation. 
+
+We define it like any other agent, here an example environment agent that infects one agent after 7 timesteps.
+
+::
+
+    '''file = "environment_SIR.py"
+    Environment Agent for SIR model: infects random
+    agent at timestep 7.'''
+    
+    from ComplexNetworkSim import NetworkAgent, Sim
+
+    class SIRenvironment(NetworkAgent):
+        
+        def __init__(self, state, initialiser):
+            NetworkAgent.__init__(self, 0, initialiser)
+            
+        def Run(self):
+            while True:
+                yield Sim.hold, self, 7.0
+                self.infectRandomInitialAgent()
+                yield Sim.passivate, self                
+
+        def infectRandomInitialAgent(self):        
+            target = NetworkAgent.r.choice(self.getAllNodes())
+            self.getAgent(target).state = INFECTED
+            
+    #    def infectHighestConnectedAgent(self):
+    #        import networkx
+    #        topo = networkx.Graph(self.globalTopology)
+    #        target = max([topo.degree(i) for i in self.getAllNodes()])
+    #        self.getAgent(target).state = INFECTED
+    
+Now, from within our simulation file, we can use it by importing it, then giving it as an extra argument into our NetworkSimulation class:
+
+::
+
+    from environment_SIR import SIRenvironment as environmentAgent
+    
+    #(...)
+        
+    simulation = NetworkSimulation(G,
+                                   states,
+                                   agentClass,
+                                   directory,
+                                   MAX_SIMULATION_TIME,
+                                   TRIALS,
+                                   environmentAgent)
+								   
+Changing network structure (edges/nodes) during simulation 
+----------------------------------------------------------
+
+Please note that this part (adding/removing edges/nodes) has not been thoroughly tested yet; it works if specified nodes and edges exist but may cause an error if trying to remove edges or nodes that don't exist.
+
+To add or remove edges, it's fairly simple: Every agent (those part of the graph and also the environment agent) can call a method, giving as arguments the node IDs of those nodes to connect/disconnect:
+
+::
+
+	#within agent behaviour code
+	self.addEdge(15, 27) #to connect two arbitrary nodes
+	self.addEdge(self.id, 27) #to connect itself with a node
+	
+	self.removeEdge(15, 27) #removes an edge if there is one. (May cause error otherwise)
+	
+
+To add a new agent node to the graph, the following method can be called from an agent, requiring as argument an initial state, and returning the id of the new node, that can then be used to create some edges from this node:
+
+::
+
+	initial_state = INFECTED
+	new_node_id = self.addNewNode(initial_state)
+	
+	
+To remove a node from the simulation environment, the easiest is to passivate it and remove all edges to it. (it can also be removed completely , however I don't recommend this at the moment because it might cause some bug - this part has not been tested very well yet) 
+
+								 
+On structuring code and parameter passing
+-----------------------------------------
+
+It might be good idea to split agent code and simulation code into different modules/files, and to have only a single central place where all parameter values are defined (which also aids to make use of the top section of this page and create simulations with multiple parameters)
+But agents may need certain values, so for this, a global class parameter sharing is integrated. 
+To go back to our disease spreading agents, maybe we wish to see the effects of a gaussian versus an exponential distribution of the time infected nodes remain active.
+
+So we define a parameter within our simulation module.
+
+::
+
+	# Create a dictionary of parameters and add a simple parameter value:
+    globalSharedParameters = {} 
+    globalSharedParameters['infection_rate'] = 0.3
+	
+	# And an executable string can also be a parameter:
+    globalSharedParameters['infection_duration'] = "self.r.gauss(7, 2)" 
+	#or e.g. globalSharedParameters['infection_duration'] = "self.r.expovariate(1/7.0)"
+	
+	
+This dictionary of an arbitrary number of global parameters can then be passed to the agents, by adding it into the simulation:
+
+::
+
+    simulation = NetworkSimulation(G,
+                                   states,
+                                   agentClass,
+                                   directory,
+                                   MAX_SIMULATION_TIME,
+                                   TRIALS,
+                                   environmentAgent,
+                                   **globalSharedParameters)
+    simulation.runSimulation()
+	
+(Mind the two stars in front of the last argument to the class)
+	
+Within our agent, we can then use these parameters like so:
+
+::
+	
+	# Normal parameter
+	self.infection_probability = self.globalSharedParameters['infection_rate']
+	
+	# If you're careful it works to evaluate a string parameter defined in the simulation module
+	# But use 'eval()' with caution! 
+	self.infection_end = eval(self.globalSharedParameters['infection_duration'])
+	
+Please note that these parameters are passed by reference, not by value to the agent class, so they are shared and global. So if one agent changes them, they are changed for all agents. 
+
+This way we can split agent behaviour from specific agent parameter values, and easily compare the effects of such a change.
+	
+
+Further features
+----------------
+
+These pages tried to indroduce all available methods that can be invoked, along with a suggested way of structuring models. I briefly regrouped them in the ref:`API`. 
+
+Future work
+-----------
+
+At the moment, agents have simple states that are represented as integers, and those states can be used for automatic integration with plotting and visualisation. It would be possible to have a more flexible state structure, e.g. a vector or a dictionary, and use those directly with plotting. At the moment, you can give your agents any further attributes you wish (a vector of them, or a dictionary of them, or some manually defined ones), but those are then not supported by the visualisation/plotting part. That's one task for the future. 
+
+Improvement of performance by allowing parellisation on multiple cores or in a distributed environment is another possible extension.
+
+Other extenions (3D visualisation, etc) are imaginable.
+
+
+

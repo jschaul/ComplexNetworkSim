@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Installation and Dependencies — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Installation%20and%20Dependencies%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Installation%20and%20Dependencies%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Installation%20and%20Dependencies%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Installation%20and%20Dependencies%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Installation%20and%20Dependencies%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Getting started with ComplexNetworkSim" href="https://pythonhosted.org/ComplexNetworkSim/start.html">
+    <link rel="prev" title="Introduction" href="https://pythonhosted.org/ComplexNetworkSim/introduction.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="Getting started with ComplexNetworkSim" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/introduction.html" title="Introduction" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation-and-dependencies">
+<span id="install"></span><h1>Installation and Dependencies<a class="headerlink" href="#installation-and-dependencies" title="Permalink to this headline">¶</a></h1>
+<p>This project was written using Python 2.6, and tested on Windows 7 32 bit and Linux openSUSE. It <em>should</em>
+ work platform independently and with all Python versions &gt;=2.6 and 
+&lt;3.0. Make sure to have the dependencies listed below installed. 
+(Please let me know when you find bugs: joe.&lt;my last 
+name&gt;@gmail.com)</p>
+<p>If you download and copy the code, please make sure that the main folder <em>ComplexNetworkSim</em> along with the dependencies are on your PYTHONPATH.</p>
+<div class="section" id="download-and-install-complexnetworksim">
+<span id="download"></span><h2>Download and install ComplexNetworkSim<a class="headerlink" href="#download-and-install-complexnetworksim" title="Permalink to this headline">¶</a></h2>
+<p>First, make sure to have matplotlib and numpy installed. If not, download/install them here: <a class="reference external" href="http://sourceforge.net/projects/numpy/files/NumPy/">NumPy</a> first then <a class="reference external" href="http://sourceforge.net/projects/matplotlib/files/matplotlib/">matplotlib</a> next.</p>
+<p>Next, if you have <a class="reference external" href="http://pypi.python.org/pypi/setuptools">setuptools</a> installed, run <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">ComplexNetworkSim</span></tt>. This will automatically also install NetworkX and SimPy, which are needed. (Otherwise download the source code from <a class="reference external" href="http://pypi.python.org/pypi/ComplexNetworkSim/">http://pypi.python.org/pypi/ComplexNetworkSim/</a> manually, and then fetch <a class="reference external" href="http://simpy.sourceforge.net/">SimPy</a> and <a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a> )</p>
+<p>Finally, I recommend installing <a class="reference external" href="http://www.imagemagick.org/">ImageMagick</a> if you would like to get animated gif output too (optional).</p>
+<p>Once the installation is complete, get started here: <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/start.html#start"><em>Getting started with ComplexNetworkSim</em></a></p>
+</div>
+<div class="section" id="list-and-explanation-of-required-dependencies">
+<span id="dependencies"></span><h2>List and explanation of required dependencies<a class="headerlink" href="#list-and-explanation-of-required-dependencies" title="Permalink to this headline">¶</a></h2>
+<p><strong>Matplotlib</strong> is a plotting library for Python which is used to
+generate both the plots and the animated visualisations. It can generate
+a variety of different plots and figures which can be saved to PNG image
+files. Download: <a class="reference external" href="http://sourceforge.net/projects/matplotlib/files/matplotlib/">matplotlib</a></p>
+<p>Matplotlib itself relies on the scientific computing library <strong>NumPy</strong>
+which also has be be installed. Download: <a class="reference external" href="http://sourceforge.net/projects/numpy/files/NumPy/">NumPy</a></p>
+<p><strong>NetworkX</strong> is a “high productivity software for complex networks”
+implemented in Python, allowing manipulation and study of the structure
+and functions of complex networks. It is required to run code from this
+project. Download: <a class="reference external" href="http://networkx.lanl.gov/">NetworkX</a></p>
+<p><strong>SimPy</strong> (= Simulation in Python) is an object-oriented,
+process-based discrete-event simulation language based on standard
+Python. Download: <a class="reference external" href="http://simpy.sourceforge.net/">SimPy</a></p>
+</div>
+<div class="section" id="optional-dependency">
+<h2>Optional dependency<a class="headerlink" href="#optional-dependency" title="Permalink to this headline">¶</a></h2>
+<p>When running a simulation which includes the creation of a
+visualisation, the framework will attempt to create an animated gif
+image once the static png images have been created (and will just
+display a message to the console to notify you if ImageMagick is not
+installed correctly). For this, the class <em>animator_gifs</em> is dependant
+on ImageMagick, as it requires its <em>convert</em> function call to combine
+multiple static images (.png) into an animated one (.gif).
+<strong>ImageMagick</strong> is an open source software suite for displaying,
+converting, and editing raster image files. It can read and write over
+100 image file formats. To make use of it, the ImageMagick <em>convert</em>
+executable has to be on your system path.
+Download: <a class="reference external" href="http://www.imagemagick.org/">ImageMagick</a></p>
+<p>Quick links to</p>
+<p><a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/start.html#start"><em>Getting started with ComplexNetworkSim</em></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation and Dependencies</a><ul>
+<li><a class="reference internal" href="#download-and-install-complexnetworksim">Download and install ComplexNetworkSim</a></li>
+<li><a class="reference internal" href="#list-and-explanation-of-required-dependencies">List and explanation of required dependencies</a></li>
+<li><a class="reference internal" href="#optional-dependency">Optional dependency</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/introduction.html" title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="next chapter">Getting started with ComplexNetworkSim</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/installation.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/start.html" title="Getting started with ComplexNetworkSim">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/introduction.html" title="Introduction">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

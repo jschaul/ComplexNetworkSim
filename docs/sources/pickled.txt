@@ -1,0 +1,55 @@
+.. _pickled:
+
+What are these .pickled files?
+==============================
+
+Upon request, just a small clarification on the generation of pickled files - these are intermediate files created upon simulation, and used when visualising and plotting. This pickle format is basically just a way to take a data structure (list, dictionary, class object) and save it to a file, and from that file, retrieve that data structure again directly. This saves one to convert it to a text or csv document and parse it again.
+
+If you would like to access manually what's in those files (although you shouldn't need to), you can do that like this for example:
+
+::
+    
+    from ComplexNetworkSim import utils
+    contents = utils.retrieve('test 3.1/log_trial_0_topology.pickled')
+    print contents
+	
+and retrieve as well as logToFile is implemented as follows:
+
+::
+
+	from cPickle import Pickler, Unpickler
+
+	def logToFile(stuff, filename, verbose=True):   
+		''' Store one item (e.g. state list or networkx graph) to file. '''
+		filename = os.path.normcase(filename)   
+		directory = os.path.dirname(filename)
+		if not os.path.exists(directory):
+				os.makedirs(directory)
+		   
+		f = open(filename, 'wb')
+		p = Pickler(f, protocol=2)
+		p.dump(stuff)
+		f.close()
+		if verbose:
+			total = len(stuff)
+			print "Written %i items to pickled binary file: %s" % (total, filename) 
+		return filename
+		
+	def retrieve(filename): 
+		''' Retrieve a pickled object (e.g. state list or networkx graph) from file
+		'''
+		filename = os.path.normcase(filename)  
+		try:      
+			f = open(filename, 'rb')   
+			u = Unpickler(f)
+			stuff = u.load()
+			f.close()
+			return stuff
+		except IOError:
+			raise LogOpeningError("No file found for %s" % filename, filename)
+			
+For more information on this pickler and unpickler format, see `Pickle`_
+
+
+.. _Pickle: http://docs.python.org/2/library/pickle.html
+

@@ -1,0 +1,25 @@
+Welcome to ComplexNetworkSim's documentation!
+=============================================
+
+ComplexNetworkSim is a Python package for the simulation of agents 
+connected in a complex network. 
+
+Contents:
+---------
+
+.. toctree::
+   :maxdepth: 2
+   
+   introduction
+   installation
+   start
+   advanced
+   api
+   pickled
+   more
+   
+First official release (after part-time development since October 2010): 28th August 2011
+
+Last update of documentation: 26th September 2011
+
+

@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Scalability testing &amp; further information — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="prev" title="Brief API" href="https://pythonhosted.org/ComplexNetworkSim/api.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="scalability-testing-further-information">
+<span id="more"></span><h1>Scalability testing &amp; further information<a class="headerlink" href="#scalability-testing-further-information" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="performance-how-scalable-is-the-simulation-environment">
+<span id="scalability"></span><h2>Performance: How scalable is the simulation environment?<a class="headerlink" href="#performance-how-scalable-is-the-simulation-environment" title="Permalink to this headline">¶</a></h2>
+<p>The simulation environment can simulate processes for a varying number
+of nodes in a graph, depending on how complex agent behaviour is. It is
+important to note that performance depends on the number of events
+triggered during the simulation, and how complex these events are, not
+the number of agents. But the number of agents does also affect
+performance due to the memory required for simulating agent behaviour.
+From a few empirical tests detailed below, it can generally be assumed that <strong>simulations run in under
+one minute for up to a few thousand agents in a network</strong> . The table
+below gives performance results for different numbers of nodes in the network, both using the same easy agent behaviour.</p>
+<blockquote>
+<div><div class="figure">
+<img alt="_images/scalability3.png" src="Scalability%20testing%20&amp;%20further%20information%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/scalability3.png">
+</div>
+<p>Performance of simulations. Times are in seconds, given as a guideline.
+(Measurements performed on a computer running Linux openSUSE 11.3 on Intel Q6600 Quad 2.4GHz with 4GB RAM.)</p>
+</div></blockquote>
+<p>On complete graphs, each susceptible agent has to check for
+every other agent in the network whether that agent is infected, which
+makes the simulation slower than for scale-free networks. Here, a single
+simulation takes time in the same order of magnitude than the creation
+of a complete graph itself (using networkX).</p>
+<p>On scale-free networks, the number of edges is much lower, thus each
+agent needs to perform fewer checks, and the bottle-neck of performance
+is the graph generation itself, since a single simulation only takes
+about 20% of the time of the generation of the scale-free graph. And the
+generation of a scale-free graph is done within the NetworkX library, so
+comparatively the simulation framework developed in this project is
+fairly efficient as long as agent behaviour is simple.</p>
+<p>Performance of visualisations are fairly constant in time because the
+time taken to do file I/O time generally outweighs the time taken to
+perform statistical calculations or plot drawing, except for very large
+numbers of trials. In all tests performed during this project, animation
+and plotting always completed in less than 20 seconds. Performance of
+visualisation does depend on the number of time steps however, since an
+image snapshot is produced for each time step.</p>
+</div>
+<div class="section" id="performance-can-it-be-improved">
+<h2>Performance: can it be improved?<a class="headerlink" href="#performance-can-it-be-improved" title="Permalink to this headline">¶</a></h2>
+<p>So far the aim has not been to develop a framwork that is the most 
+efficient for the greatest number of nodes; however it should be 
+possible to extend the framework to allow for (at least partial) 
+parellisation of processing across multiple processor cores or over a 
+distributed network. A first step would be to incorporate something like
+ “Parallel Python” - but that is future work for which I will wait for a
+ demand first before putting effort in. So if you’d like to use this 
+package on more than one processor at once, send me an email and I’ll 
+put this future work higher up on my ToDo list.</p>
+</div>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+<p>Special thanks to <a class="reference external" href="http://www.cs.bham.ac.uk/~musolesm">Dr. Mirco Musolesi</a>,
+ my supervisor during the creation of this project in the scope of a 
+senior honours project in 4th year Computer Science at the <a class="reference external" href="http://www.st-andrews.ac.uk/">University of St Andrews</a>.
+ The framework, along with the analysis of some use case simulations was
+ created in 2010-2011, and afterwards it was suggested to publish the 
+framework code online as an open source project. It is released under a 
+freeBSD license, so you may do with it what you want :)</p>
+</div>
+<div class="section" id="contact-information">
+<h2>Contact information<a class="headerlink" href="#contact-information" title="Permalink to this headline">¶</a></h2>
+<p>My name is Joé Schaul, and my email address is &lt;first name without the accent on the e&gt; dot &lt;last name&gt; @gmail.com
+Feel free to send me an email for any questions and comments. This is my first project so I’d appreciate some feedback on it. :)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scalability testing &amp; further information</a><ul>
+<li><a class="reference internal" href="#performance-how-scalable-is-the-simulation-environment">Performance: How scalable is the simulation environment?</a></li>
+<li><a class="reference internal" href="#performance-can-it-be-improved">Performance: can it be improved?</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+<li><a class="reference internal" href="#contact-information">Contact information</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="previous chapter">Brief API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/more.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/api.html" title="Brief API">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>

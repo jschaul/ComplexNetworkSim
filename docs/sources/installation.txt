@@ -1,0 +1,73 @@
+.. _install:
+
+Installation and Dependencies
+=============================
+
+This project was written using Python 2.6, and tested on Windows 7 32 bit and Linux openSUSE. It *should* work platform independently and with all Python versions >=2.6 and <3.0. Make sure to have the dependencies listed below installed. (Please let me know when you find bugs: joe.<my last name>@gmail.com)
+
+If you download and copy the code, please make sure that the main folder *ComplexNetworkSim* along with the dependencies are on your PYTHONPATH.
+
+.. _download:
+
+Download and install ComplexNetworkSim
+--------------------------------------
+
+First, make sure to have matplotlib and numpy installed. If not, download/install them here: `NumPy`_ first then `matplotlib`_ next.
+
+Next, if you have `setuptools`_ installed, run ``easy_install ComplexNetworkSim``. This will automatically also install NetworkX and SimPy, which are needed. (Otherwise download the source code from http://pypi.python.org/pypi/ComplexNetworkSim/ manually, and then fetch `SimPy`_ and `NetworkX`_ )
+
+Finally, I recommend installing `ImageMagick`_ if you would like to get animated gif output too (optional).
+
+Once the installation is complete, get started here: :ref:`start`
+
+
+.. _dependencies:
+
+List and explanation of required dependencies
+---------------------------------------------
+
+**Matplotlib** is a plotting library for Python which is used to
+generate both the plots and the animated visualisations. It can generate
+a variety of different plots and figures which can be saved to PNG image
+files. Download: `matplotlib`_
+
+Matplotlib itself relies on the scientific computing library **NumPy**
+which also has be be installed. Download: `NumPy`_
+
+**NetworkX** is a “high productivity software for complex networks”
+implemented in Python, allowing manipulation and study of the structure
+and functions of complex networks. It is required to run code from this
+project. Download: `NetworkX`_
+
+**SimPy** (= Simulation in Python) is an object-oriented,
+process-based discrete-event simulation language based on standard
+Python. Download: `SimPy`_
+
+Optional dependency
+-------------------
+
+When running a simulation which includes the creation of a
+visualisation, the framework will attempt to create an animated gif
+image once the static png images have been created (and will just
+display a message to the console to notify you if ImageMagick is not
+installed correctly). For this, the class *animator\_gifs* is dependant
+on ImageMagick, as it requires its *convert* function call to combine
+multiple static images (.png) into an animated one (.gif).
+**ImageMagick** is an open source software suite for displaying,
+converting, and editing raster image files. It can read and write over
+100 image file formats. To make use of it, the ImageMagick *convert*
+executable has to be on your system path.
+Download: `ImageMagick`_
+
+Quick links to 
+
+:ref:`start`
+
+
+.. _SimPy: http://simpy.sourceforge.net/
+.. _NetworkX: http://networkx.lanl.gov/
+.. _ImageMagick: http://www.imagemagick.org/
+.. _NumPy: http://sourceforge.net/projects/numpy/files/NumPy/
+.. _matplotlib: http://sourceforge.net/projects/matplotlib/files/matplotlib/
+.. _setuptools: http://pypi.python.org/pypi/setuptools
+

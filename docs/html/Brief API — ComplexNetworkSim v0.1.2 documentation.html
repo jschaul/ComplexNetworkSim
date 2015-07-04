@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Brief API — ComplexNetworkSim v0.1.2 documentation</title>
+    <link rel="stylesheet" href="Brief%20API%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/default.css" type="text/css">
+    <link rel="stylesheet" href="Brief%20API%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/pygments.css" type="text/css">
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="Brief%20API%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/jquery.js"></script>
+    <script type="text/javascript" src="Brief%20API%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="Brief%20API%20%E2%80%94%20ComplexNetworkSim%20v0.1.2%20documentation_files/doctools.js"></script>
+    <link rel="top" title="ComplexNetworkSim v0.1.2 documentation" href="https://pythonhosted.org/ComplexNetworkSim/index.html">
+    <link rel="next" title="Scalability testing &amp; further information" href="https://pythonhosted.org/ComplexNetworkSim/more.html">
+    <link rel="prev" title="Advanced functionality" href="https://pythonhosted.org/ComplexNetworkSim/advanced.html"> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="Scalability testing &amp; further information" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="Advanced functionality" accesskey="P">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="brief-api">
+<span id="api"></span><h1>Brief API<a class="headerlink" href="#brief-api" title="Permalink to this headline">¶</a></h1>
+<p>It is recommended to look at the other, detailed pages first. This should just serve to look up the syntax of a method.</p>
+<div class="section" id="brief-agent-api">
+<h2>Brief agent API<a class="headerlink" href="#brief-agent-api" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>from ComplexNetworkSim import NetworkAgent, Sim
+
+    self.getAllNodes() #returns a list of nodes
+    self.getAllAgents() # returns a list of agents
+    self.getNeighbouringNodes() #returns list of adjacent nodes
+    self.getNeighbouringAgents() #returns list of adjacent agents
+    #optionally takes a state as argument, filters and returns only those neighbouring agents in the given state
+    self.getNeighbouringAgentsIter() #same as above, but returns an iterable
+
+    self.id #gets the ID - please don't modify it, it may break the code.
+    self.getAgent(id) # gets the agent associated with a given node.
+
+    self.addNewNode(state)
+    self.removeEdge(u, v)
+    self.addEdge(u, v)
+
+    self.r #the random library that can be used
+    self.TIMESTEP_DEFAULT #class variable; set to 1.0</pre>
+</div>
+</div>
+<div class="section" id="brief-simulation-api">
+<h2>Brief Simulation API<a class="headerlink" href="#brief-simulation-api" title="Permalink to this headline">¶</a></h2>
+<p>Create a class <tt class="docutils literal"><span class="pre">NetworkSimulation</span></tt>:</p>
+<blockquote>
+<div><p>Can run multiple fresh trials with the same input parameters. Writes system
+state evolution to file (states &amp; network topologies) Supports
+addition/deletion of edges and nodes during simulation</p>
+<p><em>Parameters</em></p>
+<p>topology: a networkx graph</p>
+<p>states: a list of initial states corresponding to the nodes in the topology</p>
+<p>agentClass: the class of agent being activated on each node</p>
+<p>directory_name: path to where output should be stored. It is recommended to
+have a different directory per simulation.</p>
+<p>maxTime : how long the simulation should run</p>
+<p><em>Optional parameters</em></p>
+<p>no_trials: the number of individual simulation trials (default is 3)</p>
+<p>environmentAgent: the class of agent operating on the network topology
+globally, e.g. by changing the structure externally. (default is none)</p>
+<p>globalSharedParameters: dictionary of additional parameters shared globally</p>
+</div></blockquote>
+<p>Then run it. Example:</p>
+<div class="highlight-python"><pre>    from ComplexNetworkSim import NetworkSimulation
+
+simulation = NetworkSimulation(G,
+                               states,
+                               agentClass,
+                               directory,
+                               MAX_SIMULATION_TIME,
+                               TRIALS,
+                               environmentAgent,
+                               **globalSharedParameters)
+simulation.runSimulation()</pre>
+</div>
+</div>
+<div class="section" id="visualisation-plotting-api">
+<h2>Visualisation/Plotting API<a class="headerlink" href="#visualisation-plotting-api" title="Permalink to this headline">¶</a></h2>
+<p>refer to <a class="reference internal" href="https://pythonhosted.org/ComplexNetworkSim/start.html#visual"><em>Visualise simulation results</em></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Brief API</a><ul>
+<li><a class="reference internal" href="#brief-agent-api">Brief agent API</a></li>
+<li><a class="reference internal" href="#brief-simulation-api">Brief Simulation API</a></li>
+<li><a class="reference internal" href="#visualisation-plotting-api">Visualisation/Plotting API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="previous chapter">Advanced functionality</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="next chapter">Scalability testing &amp; further information</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="https://pythonhosted.org/ComplexNetworkSim/_sources/api.txt" rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q">
+      <input type="submit" value="Go">
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/more.html" title="Scalability testing &amp; further information">next</a> |</li>
+        <li class="right">
+          <a href="https://pythonhosted.org/ComplexNetworkSim/advanced.html" title="Advanced functionality">previous</a> |</li>
+        <li><a href="https://pythonhosted.org/ComplexNetworkSim/index.html">ComplexNetworkSim v0.1.2 documentation</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        © Copyright 2011, Joé Schaul.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.8.
+    </div>
+  
+</body></html>
